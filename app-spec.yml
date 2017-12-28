@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Lambda function for EC2 instance stop.
+
+Metadata: 
+  Name: ec2-instance-stop-python3
+
+Parameters:
+  InstanceID:
+    Type: String
+    Description: Set to EC2 InstanceID 
+  CheckSchedule:
+    Description: Set to Instance Check Schedule. Default [rate(1 day)]
+    Type: String
+    Default: "rate(1 day)"
+  BucketName:
+    Type: String
+    Default: "lambda-package-okiba"
+  CodeKey:
+    Type: String
+    Default: "app.zip"
+
+Resources:
+  InstanceStop:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: EC2 Stop Function
+      Handler: lambda_function.handler
+      Runtime: python3.6
+      MemorySize: 128
+      Timeout: 300
+      Policies:
+        - Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Action:
+                - ec2:Stop*
+                - ec2:DescribeInstances*
+              Resource: "*"
+      CodeUri: app.zip
+      Environment:
+        Variables:
+          INSTANCE_ID: !Ref InstanceID
+      Events:
+        CheckInstanceScheduledEvent:
+          Type: Schedule
+          Properties:
+            Schedule: !Ref CheckSchedule
