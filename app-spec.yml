@@ -13,12 +13,6 @@ Parameters:
     Description: Set to Instance Check Schedule. Default [rate(1 day)]
     Type: String
     Default: "rate(1 day)"
-  BucketName:
-    Type: String
-    Default: "lambda-package-okiba"
-  CodeKey:
-    Type: String
-    Default: "app.zip"
 
 Resources:
   InstanceStop:
